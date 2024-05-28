@@ -36,7 +36,6 @@ public interface VerifiableDocument  extends Verifiable {
     public String getPassword();
     public void setPassword(String password);
 
-    @HIDDEN
     @PROTECTION(Kind.NON_EDITABLE)
     public String getFileContentName();
     public void setFileContentName(String name);

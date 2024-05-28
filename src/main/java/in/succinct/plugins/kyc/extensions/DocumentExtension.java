@@ -10,7 +10,7 @@ public class DocumentExtension extends ModelOperationExtension<Document> {
     }
     @Override
     public void beforeValidate(Document model) {
-        if (model.getRawRecord().isFieldDirty("REQUIRED_FOR_KYC")) {
+        if (model.getRawRecord().isFieldDirty("KYC_GROUP_ID")) {
             KycInspector.submitDocumentInspection(model);
         }
     }
