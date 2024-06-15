@@ -25,10 +25,11 @@ public class VerifiableDocumentImpl<M extends Model & VerifiableDocument> extend
             return Config.instance().getServerBaseUrl() + "/"+
                     StringUtil.pluralize(getReflector().getTableName().toLowerCase())+"/view/" + getProxy().getId()     ;
         }else {
-            return null;
+            return imageUrl;
         }
     }
+    String imageUrl;
     public void setImageUrl(String imageUrl){
-
+        this.imageUrl = imageUrl;
     }
 }

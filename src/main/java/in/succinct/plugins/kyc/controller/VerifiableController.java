@@ -1,6 +1,7 @@
 package in.succinct.plugins.kyc.controller;
 
 import com.venky.swf.controller.ModelController;
+import com.venky.swf.controller.annotations.RequireLogin;
 import com.venky.swf.controller.annotations.SingleRecordAction;
 import com.venky.swf.db.Database;
 import com.venky.swf.db.model.Model;

@@ -31,7 +31,9 @@ public class DocumentedModelExtension<R extends Model & DocumentedModel> extends
     public void beforeValidate(R model) {
         if (model.isKycComplete() && model.getRawRecord().isFieldDirty("KYC_COMPLETE")){
             if (!model.getReflector().getJdbcTypeHelper().getTypeRef(boolean.class).getTypeConverter().valueOf(model.getTxnProperty("kyc.complete"))){
-                throw new AccessDeniedException();
+                if (Database.getInstance().getCurrentUser() != null && Database.getInstance().getCurrentUser().getId() > 1) {
+                    throw new AccessDeniedException();
+                }
             }
         }
         Select select = new Select().from(Document.class);

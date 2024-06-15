@@ -4,6 +4,8 @@ import com.venky.swf.db.annotations.column.IS_NULLABLE;
 import com.venky.swf.db.annotations.column.UNIQUE_KEY;
 import com.venky.swf.db.model.Model;
 
+import java.util.List;
+
 public interface KycGroup extends Model {
     @UNIQUE_KEY
     public String getName();
@@ -13,4 +15,6 @@ public interface KycGroup extends Model {
     public Integer getMinDocumentsNeeded();
     public void setMinDocumentsNeeded(Integer minDocumentsNeeded);
     //Null means all in the group are  needed.
+
+    public List<Document> getDocuments();
 }

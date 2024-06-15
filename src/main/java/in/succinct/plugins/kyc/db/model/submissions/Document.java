@@ -1,5 +1,6 @@
 package in.succinct.plugins.kyc.db.model.submissions;
 
+import com.venky.swf.db.annotations.column.IS_NULLABLE;
 import com.venky.swf.db.annotations.column.UNIQUE_KEY;
 import com.venky.swf.db.annotations.column.indexing.Index;
 import com.venky.swf.db.model.Model;
@@ -18,7 +19,7 @@ public interface Document extends Model {
     public String getDocumentName();
     public void setDocumentName(String documentName);
 
-
+    @IS_NULLABLE(true)
     public Long getKycGroupId();
     public void setKycGroupId(Long id);
     public KycGroup getKycGroup();
