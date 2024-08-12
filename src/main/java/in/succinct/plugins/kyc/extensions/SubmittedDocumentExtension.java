@@ -56,7 +56,7 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
         private static <R extends Model & DocumentedModel> void submitModelInspection(R kycModel){
             TaskManager.instance().executeAsync(new KycInspector<>(kycModel),false); //Should be true.
         }
-    private static <R extends Model & DocumentedModel> void submitModelInspections(List<R> models) {
+        private static <R extends Model & DocumentedModel> void submitModelInspections(List<R> models) {
             for (R model : models) {
                 submitModelInspection(model);
             }
@@ -66,8 +66,11 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
 
         @Override
         public int hashCode() {
-            return (model.getClass().getName() + ":" + model.getId()).hashCode();
-
+            if (model != null) {
+                return (model.getClass().getName() + ":" + model.getId()).hashCode();
+            }else {
+                return super.hashCode();
+            }
         }
 
 
