@@ -1,15 +1,11 @@
 package in.succinct.plugins.kyc.db.model;
 
-import com.venky.swf.db.annotations.column.COLUMN_DEF;
 import com.venky.swf.db.annotations.column.IS_VIRTUAL;
 import com.venky.swf.db.annotations.column.PASSWORD;
 import com.venky.swf.db.annotations.column.UNIQUE_KEY;
-import com.venky.swf.db.annotations.column.defaulting.StandardDefault;
 import com.venky.swf.db.annotations.column.ui.HIDDEN;
 import com.venky.swf.db.annotations.column.ui.PROTECTION;
 import com.venky.swf.db.annotations.column.ui.PROTECTION.Kind;
-import com.venky.swf.db.annotations.column.validations.Enumeration;
-import com.venky.swf.db.model.Model;
 
 import java.io.InputStream;
 import java.sql.Date;
