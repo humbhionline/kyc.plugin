@@ -116,7 +116,8 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 KycGroup group = kycGroupMap.get(groupId);
                 Set<Long> requiredDocumentIds = kycRequirementMap.get(groupId);
                 Set<Long> submittedDocumentIds = kycSubmittedDocumentsMap.get(groupId);
-                if (group.getMinDocumentsNeeded() != null){
+                Integer minDocsNeeded = getMinDocumentsNeeded(group,model);
+                if (minDocsNeeded != null){
                     if (kycSubmittedDocumentsMap.get(groupId).size() >= group.getMinDocumentsNeeded()){
                         kycRequirementMap.remove(groupId); //Not required to submit the rest.
                     }
@@ -138,6 +139,10 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 model.setKycComplete(false);
                 model.save();
             }
+        }
+
+        private Integer getMinDocumentsNeeded(KycGroup group, R model) {
+            return model.getMinDocumentsNeeded(group);
         }
 
         @NotNull
