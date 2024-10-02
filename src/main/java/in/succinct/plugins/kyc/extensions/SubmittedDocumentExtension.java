@@ -53,7 +53,7 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
             Class<R> clazz = DocumentedModelRegistry.getInstance().getDocumentedModelClass(model.getDocumentedModelName());
             submitModelInspections(new Select().from(clazz).execute());
         }
-        private static <R extends Model & DocumentedModel> void submitModelInspection(R kycModel){
+        public static <R extends Model & DocumentedModel> void submitModelInspection(R kycModel){
             TaskManager.instance().executeAsync(new KycInspector<>(kycModel),false); //Should be true.
         }
         private static <R extends Model & DocumentedModel> void submitModelInspections(List<R> models) {
@@ -131,11 +131,13 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
 
 
 
-            if (kycRequirementMap.isEmpty()){
-                model.setTxnProperty("kyc.complete",true);
-                model.setKycComplete(true);
-                model.save();
-            }else {
+            if (kycRequirementMap.isEmpty() ){
+                if (!model.isKycComplete()) {
+                    model.setTxnProperty("kyc.complete", true);
+                    model.setKycComplete(true);
+                    model.save();
+                }
+            }else if (model.isKycComplete()){
                 model.setKycComplete(false);
                 model.save();
             }

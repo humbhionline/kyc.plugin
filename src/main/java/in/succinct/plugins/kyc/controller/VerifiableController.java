@@ -18,9 +18,7 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
     @SingleRecordAction(icon = "fas fa-check", tooltip = "Mark Approved")
     public View approve(long id){
         M document = Database.getTable(getModelClass()).get(id);
-        document.setTxnProperty("being.verified",true);
-        document.setVerificationStatus(VerifiableDocument.APPROVED);
-        document.save();
+        document.approve();
         if (getIntegrationAdaptor() == null){
             return back();
         }else {
@@ -31,9 +29,7 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
     @SingleRecordAction(icon = "fas fa-times", tooltip = "Mark Rejected")
     public View reject(long id){
         M document = Database.getTable(getModelClass()).get(id);
-        document.setTxnProperty("being.verified",true);
-        document.setVerificationStatus(VerifiableDocument.REJECTED);
-        document.save();
+        document.reject();
         if (getIntegrationAdaptor() == null){
             return back();
         }else {

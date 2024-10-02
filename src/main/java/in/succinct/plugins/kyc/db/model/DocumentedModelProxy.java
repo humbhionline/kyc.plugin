@@ -32,6 +32,8 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
         model.setKycComplete(kycComplete);
     }
 
+
+
     @Override
     public List<SubmittedDocument> getSubmittedDocuments() {
         Select select  =new Select().from(SubmittedDocument.class);

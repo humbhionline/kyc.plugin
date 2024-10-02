@@ -36,10 +36,5 @@ public class DocumentedModelExtension<R extends Model & DocumentedModel> extends
                 }
             }
         }
-        Select select = new Select().from(Document.class);
-        select.where(new Expression(select.getPool(),"DOCUMENTED_MODEL_NAME", Operator.EQ,getModelClass().getSimpleName()));
-        if (select.execute(1).isEmpty()){
-            model.setKycComplete(true);
-        }
     }
 }

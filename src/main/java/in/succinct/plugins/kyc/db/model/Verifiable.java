@@ -22,4 +22,9 @@ public interface Verifiable  {
 
     public static final String BEING_VERIFIED= "being.verified";
 
+    public void approve();
+    public void reject();
+    public void approve(boolean persist);
+    public void reject(boolean persist);
+
 }

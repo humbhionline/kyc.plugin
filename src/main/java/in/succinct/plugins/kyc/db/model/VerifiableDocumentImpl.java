@@ -5,7 +5,7 @@ import com.venky.swf.db.model.Model;
 import com.venky.swf.db.table.ModelImpl;
 import com.venky.swf.routing.Config;
 
-public class VerifiableDocumentImpl<M extends Model & VerifiableDocument> extends ModelImpl<M> {
+public class VerifiableDocumentImpl<M extends Model & VerifiableDocument> extends VerifiableImpl<M> {
     public VerifiableDocumentImpl(M p){
         super(p);
     }
