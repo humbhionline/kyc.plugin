@@ -17,9 +17,6 @@ public interface DocumentedModel {
     public boolean isKycComplete();
     public void setKycComplete(boolean kycComplete);
 
-    @COLUMN_SIZE(1024)
-    public String getRemarks();
-    public void setRemarks(String remarks);
 
     @IS_VIRTUAL
     Integer getMinDocumentsNeeded(KycGroup group);

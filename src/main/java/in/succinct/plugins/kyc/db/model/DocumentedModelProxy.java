@@ -33,13 +33,6 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
     }
 
 
-    public String getRemarks(){
-        return model.getRemarks();
-    }
-    public void setRemarks(String remarks){
-        model.setRemarks(remarks);
-    }
-
     @Override
     public List<SubmittedDocument> getSubmittedDocuments() {
         Select select  =new Select().from(SubmittedDocument.class);

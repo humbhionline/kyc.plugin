@@ -145,11 +145,15 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 StringBuilder message = new StringBuilder();
                 kycRequirementMap.forEach((groupId,docSet)->{
                     KycGroup group = kycGroupMap.get(groupId);
-                    message.append(String.format("At least %d Documents needed for %s \n",
-                            getMinDocumentsNeeded(group,model),
+                    int minDocuments = getMinDocumentsNeeded(group,model);
+                    message.append(String.format("At least %d %s needed for %s \n",
+                            minDocuments,
+                            (minDocuments == 1 ? "Document" : "Documents"),
                             group.getName()));
                 });
-               model.setRemarks(message.toString());
+                if (model instanceof Verifiable) {
+                    ((Verifiable)model).setRemarks(message.toString());
+                }
                model.save();
             }
         }
