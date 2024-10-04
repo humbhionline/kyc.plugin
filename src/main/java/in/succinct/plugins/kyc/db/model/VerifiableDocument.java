@@ -52,7 +52,6 @@ public interface VerifiableDocument  extends Verifiable {
     public String getImageUrl();
     public void setImageUrl(String imageUrl);
 
-    public String getRemarks();
-    public void setRemarks(String remarks);
+
 
 }

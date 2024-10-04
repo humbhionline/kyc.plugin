@@ -14,7 +14,7 @@ public class VerifiableExtension<M extends Model & Verifiable> extends ModelOper
     @Override
     protected void beforeValidate(M instance) {
         if (!ObjectUtil.equals(true,instance.getTxnProperty("being.verified"))){
-            if (instance.getRawRecord().isFieldDirty("VERIFICATION_STATUS") && !instance.getVerificationStatus().equals(Verifiable.PENDING)) {
+            if (instance.getRawRecord().isFieldDirty("VERIFICATION_STATUS") && !instance.getVerificationStatus().equals(Verifiable.PENDING) && !instance.getVerificationStatus().equals(Verifiable.BEING_REVIEWED) ) {
                 if (Database.getInstance().getCurrentUser() != null && Database.getInstance().getCurrentUser().getId() > 1) {
                     throw new AccessDeniedException();
                 }

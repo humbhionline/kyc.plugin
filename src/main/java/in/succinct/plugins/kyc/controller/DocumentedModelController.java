@@ -1,5 +1,7 @@
 package in.succinct.plugins.kyc.controller;
 
+import com.venky.core.util.Bucket;
+import com.venky.core.util.ObjectUtil;
 import com.venky.swf.controller.annotations.SingleRecordAction;
 import com.venky.swf.db.Database;
 import com.venky.swf.db.model.Model;
@@ -20,11 +22,17 @@ public class DocumentedModelController<M extends DocumentedModel & Model & Verif
     public View approve(long id){
         M m = Database.getTable(getModelClass()).get(id);
         List<SubmittedDocument> submittedDocumentList =  m.getSubmittedDocuments();
+        Bucket numDocumentsApproved = new Bucket();
+
         if (!submittedDocumentList.isEmpty()){
             for (SubmittedDocument submittedDocument : submittedDocumentList) {
-                submittedDocument.approve();
+                if (!ObjectUtil.equals(submittedDocument.getVerificationStatus(),Verifiable.APPROVED)){
+                    submittedDocument.approve();
+                    numDocumentsApproved.increment();
+                }
             }
-        }else {
+        }
+        if (numDocumentsApproved.intValue() == 0){
             KycInspector.submitModelInspection(m);
         }
 
@@ -37,6 +45,33 @@ public class DocumentedModelController<M extends DocumentedModel & Model & Verif
 
     @SingleRecordAction(icon = "fas fa-times", tooltip = "Mark Rejected")
     public View reject(long id){
-        return super.reject(id);
+        M m = Database.getTable(getModelClass()).get(id);
+        if (ObjectUtil.equals(getPath().getRequest().getMethod(),"POST")){
+            List<M> ms = getIntegrationAdaptor().readRequest(getPath());
+            if (!ms.isEmpty()){
+                m.setRemarks(ms.get(0).getRemarks());
+            }
+        }
+
+        m.setKycComplete(false);
+        m.reject();
+
+        if (getIntegrationAdaptor() == null){
+            return back();
+        }else {
+            return show(m);
+        }
+    }
+
+    @SingleRecordAction(icon = "fas fa-cloud-upload-alt", tooltip = "Submit for review")
+    public View submit(long id){
+        M document = Database.getTable(getModelClass()).get(id);
+        document.setKycComplete(false);
+        document.submit();
+        if (getIntegrationAdaptor() == null){
+            return back();
+        }else {
+            return show(document);
+        }
     }
 }

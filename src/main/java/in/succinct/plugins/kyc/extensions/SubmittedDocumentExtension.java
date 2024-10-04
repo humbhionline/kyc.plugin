@@ -10,6 +10,7 @@ import com.venky.swf.sql.Expression;
 import com.venky.swf.sql.Operator;
 import com.venky.swf.sql.Select;
 import in.succinct.plugins.kyc.db.model.DocumentedModel;
+import in.succinct.plugins.kyc.db.model.Verifiable;
 import in.succinct.plugins.kyc.db.model.VerifiableDocument;
 import in.succinct.plugins.kyc.db.model.submissions.Document;
 import in.succinct.plugins.kyc.db.model.submissions.KycGroup;
@@ -118,7 +119,7 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 Set<Long> submittedDocumentIds = kycSubmittedDocumentsMap.get(groupId);
                 Integer minDocsNeeded = getMinDocumentsNeeded(group,model);
                 if (minDocsNeeded != null){
-                    if (kycSubmittedDocumentsMap.get(groupId).size() >= group.getMinDocumentsNeeded()){
+                    if (kycSubmittedDocumentsMap.get(groupId).size() >= minDocsNeeded){
                         kycRequirementMap.remove(groupId); //Not required to submit the rest.
                     }
                 }else {
@@ -140,6 +141,16 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
             }else if (model.isKycComplete()){
                 model.setKycComplete(false);
                 model.save();
+            }else{
+                StringBuilder message = new StringBuilder();
+                kycRequirementMap.forEach((groupId,docSet)->{
+                    KycGroup group = kycGroupMap.get(groupId);
+                    message.append(String.format("At least %d Documents needed for %s \n",
+                            getMinDocumentsNeeded(group,model),
+                            group.getName()));
+                });
+               model.setRemarks(message.toString());
+               model.save();
             }
         }
 
