@@ -136,8 +136,8 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 if (!model.isKycComplete()) {
                     model.setTxnProperty("kyc.complete", true);
                     model.setKycComplete(true);
-                    model.save();
                 }
+                model.save();
             }else if (model.isKycComplete()){
                 model.setKycComplete(false);
                 model.save();
