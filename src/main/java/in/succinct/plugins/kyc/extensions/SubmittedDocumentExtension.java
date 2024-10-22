@@ -18,6 +18,7 @@ import in.succinct.plugins.kyc.db.model.submissions.SubmittedDocument;
 import in.succinct.plugins.kyc.util.DocumentedModelRegistry;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -137,9 +138,11 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                     model.setTxnProperty("kyc.complete", true);
                     model.setKycComplete(true);
                 }
+                model.setUpdatedAt(new Timestamp(System.currentTimeMillis()));//Force and update. to ensure before validate get called.!! Bad idea but doeasnot seem to have much choice.
                 model.save();
             }else if (model.isKycComplete()){
                 model.setKycComplete(false);
+                model.setUpdatedAt(new Timestamp(System.currentTimeMillis()));//Force and update. to ensure before validate get called.!! Bad idea but doeasnot seem to have much choice.
                 model.save();
             }else{
                 StringBuilder message = new StringBuilder();
@@ -154,7 +157,7 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 if (model instanceof Verifiable) {
                     ((Verifiable)model).setRemarks(message.toString());
                 }
-               model.save();
+                model.save();
             }
         }
 
