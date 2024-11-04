@@ -155,7 +155,10 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                             group.getName()));
                 });
                 if (model instanceof Verifiable) {
-                    ((Verifiable)model).setRemarks(message.toString());
+                    Verifiable v = (Verifiable)model;
+                    if (!ObjectUtil.equals(v.getVerificationStatus(),Verifiable.PENDING)) {
+                        v.setRemarks(message.toString());
+                    }
                 }
                 model.save();
             }

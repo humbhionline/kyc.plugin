@@ -14,9 +14,11 @@ public class VerifiableExtension<M extends Model & Verifiable> extends ModelOper
     @Override
     protected void beforeValidate(M instance) {
         if (!ObjectUtil.equals(true,instance.getTxnProperty("being.verified"))){
-            if (instance.getRawRecord().isFieldDirty("VERIFICATION_STATUS") && !instance.getVerificationStatus().equals(Verifiable.PENDING) && !instance.getVerificationStatus().equals(Verifiable.BEING_REVIEWED) ) {
-                if (Database.getInstance().getCurrentUser() != null && Database.getInstance().getCurrentUser().getId() > 1) {
-                    throw new AccessDeniedException();
+            if (instance.getRawRecord().isFieldDirty("VERIFICATION_STATUS") ) {
+                if (!instance.getVerificationStatus().equals(Verifiable.PENDING) && !instance.getVerificationStatus().equals(Verifiable.BEING_REVIEWED) ) {
+                    if (Database.getInstance().getCurrentUser() != null && Database.getInstance().getCurrentUser().getId() > 1) {
+                        throw new AccessDeniedException();
+                    }
                 }
             }else if (instance.isDirty()){
                 if (ObjectUtil.equals(instance.getVerificationStatus(),Verifiable.APPROVED)) {
@@ -25,7 +27,7 @@ public class VerifiableExtension<M extends Model & Verifiable> extends ModelOper
                     }else {
                         throw new AccessDeniedException("Cannot modify after approval! Please create a fresh request for approval.");
                     }
-                }else {
+                }else  {
                     instance.setVerificationStatus(Verifiable.PENDING);
                 }
             }
