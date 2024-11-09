@@ -26,9 +26,8 @@ public interface Verifiable  {
 
     public void approve();
     public void reject();
-    public void approve(boolean persist);
-    public void reject(boolean persist);
     public void submit();
+    public void revokeApproval();
 
     public String getRemarks();
     public void setRemarks(String remarks);

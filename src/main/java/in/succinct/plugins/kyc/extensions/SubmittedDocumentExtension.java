@@ -134,16 +134,9 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
 
 
             if (kycRequirementMap.isEmpty() ){
-                if (!model.isKycComplete()) {
-                    model.setTxnProperty("kyc.complete", true);
-                    model.setKycComplete(true);
-                }
-                model.setUpdatedAt(new Timestamp(System.currentTimeMillis()));//Force and update. to ensure before validate get called.!! Bad idea but doeasnot seem to have much choice.
-                model.save();
-            }else if (model.isKycComplete()){
-                model.setKycComplete(false);
-                model.setUpdatedAt(new Timestamp(System.currentTimeMillis()));//Force and update. to ensure before validate get called.!! Bad idea but doeasnot seem to have much choice.
-                model.save();
+                model.approve();
+            }else if (ObjectUtil.equals(model.getVerificationStatus(),Verifiable.APPROVED)){
+                model.revokeApproval();
             }else{
                 StringBuilder message = new StringBuilder();
                 kycRequirementMap.forEach((groupId,docSet)->{
@@ -154,11 +147,8 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                             (minDocuments == 1 ? "Document" : "Documents"),
                             group.getName()));
                 });
-                if (model instanceof Verifiable) {
-                    Verifiable v = (Verifiable)model;
-                    if (!ObjectUtil.equals(v.getVerificationStatus(),Verifiable.PENDING)) {
-                        v.setRemarks(message.toString());
-                    }
+                if (!ObjectUtil.equals(model.getVerificationStatus(),Verifiable.PENDING)) {
+                    model.setRemarks(message.toString());
                 }
                 model.save();
             }

@@ -1,5 +1,6 @@
 package in.succinct.plugins.kyc.controller;
 
+import com.venky.core.util.ObjectUtil;
 import com.venky.swf.controller.ModelController;
 import com.venky.swf.controller.annotations.RequireLogin;
 import com.venky.swf.controller.annotations.SingleRecordAction;
@@ -9,6 +10,8 @@ import com.venky.swf.path.Path;
 import com.venky.swf.views.View;
 import in.succinct.plugins.kyc.db.model.Verifiable;
 import in.succinct.plugins.kyc.db.model.VerifiableDocument;
+
+import java.util.List;
 
 public class VerifiableController<M extends Verifiable & Model> extends ModelController<M> {
     public VerifiableController(Path path) {
@@ -29,6 +32,13 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
     @SingleRecordAction(icon = "fas fa-times", tooltip = "Mark Rejected")
     public View reject(long id){
         M document = Database.getTable(getModelClass()).get(id);
+        if (ObjectUtil.equals(getPath().getRequest().getMethod(),"POST")){
+            List<M> ms = getIntegrationAdaptor().readRequest(getPath());
+            if (!ms.isEmpty()){
+                document.setRemarks(ms.get(0).getRemarks());
+            }
+        }
+
         document.reject();
         if (getIntegrationAdaptor() == null){
             return back();

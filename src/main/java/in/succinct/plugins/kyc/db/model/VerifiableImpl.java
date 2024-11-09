@@ -31,12 +31,12 @@ public class VerifiableImpl<M extends Model & Verifiable> extends ModelImpl<M> {
         }
     }
 
-    private void approve(M m){
+    public void approve(M m){
         m.setTxnProperty("being.verified",true);
         m.setVerificationStatus(VerifiableDocument.APPROVED);
         m.setRemarks(null);
     }
-    private void reject(M m){
+    public void reject(M m){
         m.setTxnProperty("being.verified",true);
         m.setVerificationStatus(VerifiableDocument.REJECTED);
     }
@@ -44,6 +44,13 @@ public class VerifiableImpl<M extends Model & Verifiable> extends ModelImpl<M> {
     public void submit(){
         M m = getProxy();
         m.setVerificationStatus(Verifiable.BEING_REVIEWED);
+        m.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        m.save();
+    }
+
+    public void revokeApproval(){
+        M m = getProxy();
+        m.setVerificationStatus(Verifiable.PENDING);
         m.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         m.save();
     }

@@ -12,10 +12,7 @@ import in.succinct.plugins.kyc.db.model.submissions.SubmittedDocument;
 
 import java.util.List;
 
-public interface DocumentedModel {
-    @COLUMN_DEF(StandardDefault.BOOLEAN_FALSE)
-    public boolean isKycComplete();
-    public void setKycComplete(boolean kycComplete);
+public interface DocumentedModel extends Verifiable {
 
 
     @IS_VIRTUAL
