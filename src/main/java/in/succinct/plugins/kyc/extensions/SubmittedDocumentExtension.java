@@ -12,6 +12,7 @@ import com.venky.swf.sql.Select;
 import in.succinct.plugins.kyc.db.model.DocumentedModel;
 import in.succinct.plugins.kyc.db.model.Verifiable;
 import in.succinct.plugins.kyc.db.model.VerifiableDocument;
+import in.succinct.plugins.kyc.db.model.VerifiableImpl;
 import in.succinct.plugins.kyc.db.model.submissions.Document;
 import in.succinct.plugins.kyc.db.model.submissions.KycGroup;
 import in.succinct.plugins.kyc.db.model.submissions.SubmittedDocument;
@@ -134,9 +135,9 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
 
 
             if (kycRequirementMap.isEmpty() ){
-                model.approve();
+                new VerifiableImpl<>(model).approve(); //Prevent Recursion
             }else if (ObjectUtil.equals(model.getVerificationStatus(),Verifiable.APPROVED)){
-                model.revokeApproval();
+                new VerifiableImpl<>(model).revokeApproval();
             }else{
                 StringBuilder message = new StringBuilder();
                 kycRequirementMap.forEach((groupId,docSet)->{
