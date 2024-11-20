@@ -58,7 +58,7 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
         }
     }
     
-    @SingleRecordAction(icon = "fas fa-cloud-upload-alt", tooltip = "Submit for review")
+    @SingleRecordAction(icon = "fas fa-hourglass", tooltip = "Revoke Approval")
     public View revokeApproval(long id){
         M document = Database.getTable(getModelClass()).get(id);
         document.revokeApproval();
