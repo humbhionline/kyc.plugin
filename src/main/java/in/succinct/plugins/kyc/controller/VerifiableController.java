@@ -57,6 +57,16 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
             return show(document);
         }
     }
-
+    
+    @SingleRecordAction(icon = "fas fa-cloud-upload-alt", tooltip = "Submit for review")
+    public View revokeApproval(long id){
+        M document = Database.getTable(getModelClass()).get(id);
+        document.revokeApproval();
+        if (getIntegrationAdaptor() == null){
+            return back();
+        }else {
+            return show(document);
+        }
+    }
 
 }
