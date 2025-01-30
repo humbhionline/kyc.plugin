@@ -32,12 +32,12 @@ public class VerifiableImpl<M extends Model & Verifiable> extends ModelImpl<M> {
     }
 
     public void approve(M m){
-        m.setTxnProperty("being.verified",true);
+        m.setTxnProperty(Verifiable.BEING_VERIFIED,true);
         m.setVerificationStatus(VerifiableDocument.APPROVED);
         m.setRemarks(null);
     }
     public void reject(M m){
-        m.setTxnProperty("being.verified",true);
+        m.setTxnProperty(Verifiable.BEING_VERIFIED,true);
         m.setVerificationStatus(VerifiableDocument.REJECTED);
     }
 
