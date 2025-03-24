@@ -21,6 +21,12 @@ public class VerifiableController<M extends Verifiable & Model> extends ModelCon
     @SingleRecordAction(icon = "fas fa-check", tooltip = "Mark Approved")
     public View approve(long id){
         M document = Database.getTable(getModelClass()).get(id);
+        if (ObjectUtil.equals(getPath().getRequest().getMethod(),"POST")){
+            List<M> ms = getIntegrationAdaptor().readRequest(getPath());
+            if (!ms.isEmpty()){
+                document.getRawRecord().load(ms.get(0).getRawRecord());
+            }
+        }
         document.approve();
         if (getIntegrationAdaptor() == null){
             return back();
