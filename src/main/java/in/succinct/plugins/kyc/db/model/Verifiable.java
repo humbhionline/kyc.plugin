@@ -23,7 +23,9 @@ public interface Verifiable  {
     public void setVerificationStatus(String status);
 
     public static final String BEING_VERIFIED= "being.verified";
-
+    public static final String BEING_SUBMITTED= "being.submitted";
+    
+    
     public void approve();
     public void reject();
     public void submit();

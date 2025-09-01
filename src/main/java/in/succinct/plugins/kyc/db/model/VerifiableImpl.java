@@ -45,6 +45,7 @@ public class VerifiableImpl<M extends Model & Verifiable> extends ModelImpl<M> {
         M m = getProxy();
         m.setVerificationStatus(Verifiable.BEING_REVIEWED);
         m.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        m.setTxnProperty(Verifiable.BEING_SUBMITTED,true);
         m.save();
     }
 
