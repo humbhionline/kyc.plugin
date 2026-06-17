@@ -36,9 +36,14 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
     public Integer getMinDocumentsNeeded(KycGroup group){
         return group.getMinDocumentsNeeded();
     }
+    
+    @Override
+    public void approve(){
+        approve(true);
+    }
 
     @Override
-    public void approve() {
+    public void approve(boolean persist) {
         List<SubmittedDocument> submittedDocumentList =  model.getSubmittedDocuments();
         Bucket numDocuments = new Bucket();
         if (!submittedDocumentList.isEmpty()){
@@ -49,10 +54,7 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
                 }
             }
         }
-        if (numDocuments.intValue() == 0) {
-            KycInspector.submitModelInspection(model);
-        }
-        //verifiableProxy.approve(persist);
+        KycInspector.inspect(model,persist);
     }
 
     @Override
@@ -60,6 +62,11 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
         verifiableProxy.reject();
     }
 
+    @Override
+    public void reject(boolean persist){
+        verifiableProxy.reject(persist);
+    }
+    
     @Override
     public void submit() {
         verifiableProxy.submit();
@@ -69,8 +76,13 @@ public class DocumentedModelProxy<M extends Model & DocumentedModel> implements 
     public void revokeApproval() {
         verifiableProxy.revokeApproval();
     }
-
-
+    
+    @Override
+    public void revokeApproval(boolean persist) {
+        verifiableProxy.revokeApproval(persist);
+    }
+    
+    
     @Override
     public String getVerificationStatus() {
         return model.getVerificationStatus();

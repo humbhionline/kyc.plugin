@@ -19,7 +19,6 @@ import in.succinct.plugins.kyc.db.model.submissions.SubmittedDocument;
 import in.succinct.plugins.kyc.util.DocumentedModelRegistry;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
             Class<R> clazz = DocumentedModelRegistry.getInstance().getDocumentedModelClass(model.getDocumentedModelName());
             submitModelInspections(new Select().from(clazz).execute());
         }
-        public static <R extends Model & DocumentedModel> void submitModelInspection(R kycModel){
+        public static <R extends Model & DocumentedModel> void  submitModelInspection(R kycModel){
             TaskManager.instance().executeAsync(new KycInspector<>(kycModel),false); //Should be true.
         }
         private static <R extends Model & DocumentedModel> void submitModelInspections(List<R> models) {
@@ -64,8 +63,9 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                 submitModelInspection(model);
             }
         }
-
-
+        public static <R extends Model & DocumentedModel> void inspect(R kycModel,boolean persist){
+            new KycInspector<>(kycModel).inspect(persist);
+        }
 
         @Override
         public int hashCode() {
@@ -104,17 +104,30 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
             }
             return kycGroupMap;
         }
-
+        
+        public void  inspect(boolean persist){
+            if (isKycRequirementMet()){
+                new VerifiableImpl<>(model).approve(false); //Prevent Recursion
+            }else {
+                new VerifiableImpl<>(model).revokeApproval(false );
+            }
+            if (persist){
+                model.save();
+            }
+        }
 
         @Override
         public void execute() {
+            inspect(true );
+        }
+        private  boolean isKycRequirementMet(){
             Map<Long,Document> documentMap = getDocumentMap();
             Map<Long,KycGroup> kycGroupMap = getKycGroupMap();
             Map<Long, Set<Long>> kycRequirementMap = getKycRequirementMap(documentMap);
             Map<Long, Set<Long>> kycSubmittedDocumentsMap  = getKycSubmissionMap(documentMap);
             Set<Long> kycGroupsToInspect = new HashSet<>(kycRequirementMap.keySet());
-
-
+            
+            
             kycGroupsToInspect.forEach(groupId->{
                 KycGroup group = kycGroupMap.get(groupId);
                 Set<Long> requiredDocumentIds = kycRequirementMap.get(groupId);
@@ -131,15 +144,10 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                     }
                 }
             });
-
-
-
-            if (kycRequirementMap.isEmpty() ){
-                new VerifiableImpl<>(model).approve(); //Prevent Recursion
-            }else if (ObjectUtil.equals(model.getVerificationStatus(),Verifiable.APPROVED)){
-                new VerifiableImpl<>(model).revokeApproval();
-            }else{
-                StringBuilder message = new StringBuilder();
+            
+            boolean met = kycRequirementMap.isEmpty();
+            if (!met){
+                StringBuilder message = new StringBuilder("Some Requirements are not furnished ( e,g. ");
                 kycRequirementMap.forEach((groupId,docSet)->{
                     KycGroup group = kycGroupMap.get(groupId);
                     int minDocuments = getMinDocumentsNeeded(group,model);
@@ -148,11 +156,14 @@ public class SubmittedDocumentExtension extends VerifiableDocumentExtension<Subm
                             (minDocuments == 1 ? "Document" : "Documents"),
                             group.getName()));
                 });
-                if (!ObjectUtil.equals(model.getVerificationStatus(),Verifiable.PENDING)) {
-                    model.setRemarks(message.toString());
-                }
-                model.save();
+                message.append("Dependent approvals may be missing.\nPlease review and resubmit for approval.\n");
+                message.append(")");
+                model.setRemarks(message.toString());
+            }else {
+                model.setRemarks(null);
             }
+            return met;
+            
         }
 
         private Integer getMinDocumentsNeeded(KycGroup group, R model) {

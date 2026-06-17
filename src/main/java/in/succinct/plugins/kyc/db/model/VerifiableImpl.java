@@ -48,11 +48,15 @@ public class VerifiableImpl<M extends Model & Verifiable> extends ModelImpl<M> {
         m.setTxnProperty(Verifiable.BEING_SUBMITTED,true);
         m.save();
     }
-
     public void revokeApproval(){
+        revokeApproval(true);
+    }
+    public void revokeApproval(boolean persist){
         M m = getProxy();
         m.setVerificationStatus(Verifiable.PENDING);
         m.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        m.save();
+        if (persist) {
+            m.save();
+        }
     }
 }

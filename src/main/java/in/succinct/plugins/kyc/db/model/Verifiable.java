@@ -1,6 +1,7 @@
 package in.succinct.plugins.kyc.db.model;
 
 import com.venky.swf.db.annotations.column.COLUMN_DEF;
+import com.venky.swf.db.annotations.column.COLUMN_SIZE;
 import com.venky.swf.db.annotations.column.IS_NULLABLE;
 import com.venky.swf.db.annotations.column.defaulting.StandardDefault;
 import com.venky.swf.db.annotations.column.indexing.Index;
@@ -22,15 +23,22 @@ public interface Verifiable  {
     public String getVerificationStatus();
     public void setVerificationStatus(String status);
 
-    public static final String BEING_VERIFIED= "being.verified";
+    public static final String  BEING_VERIFIED= "being.verified";
     public static final String BEING_SUBMITTED= "being.submitted";
     
     
     public void approve();
+    
+    public void approve(boolean persist);
     public void reject();
+    
+    public void reject(boolean persist);
     public void submit();
     public void revokeApproval();
-
+    public void revokeApproval(boolean persist);
+    
+    
+    @COLUMN_SIZE(2048)
     public String getRemarks();
     public void setRemarks(String remarks);
 
