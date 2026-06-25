@@ -16,8 +16,9 @@ public interface Verifiable  {
     public static final String PENDING="Pending";
     public static final String BEING_REVIEWED="Being Reviewed";
 
+    // Only Api can be used for modification of this field.
     @Enumeration(PENDING+"," +BEING_REVIEWED +"," +APPROVED+","+REJECTED)
-    @PROTECTION(Kind.NON_EDITABLE)
+    @PROTECTION
     @Index
     @COLUMN_DEF(value = StandardDefault.SOME_VALUE , args = PENDING)
     public String getVerificationStatus();
